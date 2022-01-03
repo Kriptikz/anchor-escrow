@@ -155,7 +155,31 @@ describe('anchor-escrow', () => {
   });
 
   it("Exchange escrow state", async () => {
-    // TODO
+    await program.rpc.exchange({
+      accounts: {
+        taker: takerMainAccount.publicKey,
+        takerDepositTokenAccount: takerTokenAccountB,
+        takerReceiveTokenAccount: takerTokenAccountA,
+        initializerDepositTokenAccount: initializerTokenAccountA,
+        initializerReceiveTokenAccount: initializerTokenAccountB,
+        initializer: initializerMainAccount.publicKey,
+        escrowAccount: escrowAccount.publicKey,
+        vaultAccount: vault_account_pda,
+        vaultAuthority: vault_authority_pda,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [takerMainAccount]
+    });
+
+    let _takerTokenAccountA = await mintA.getAccountInfo(takerTokenAccountA);
+    let _takerTokenAccountB = await mintB.getAccountInfo(takerTokenAccountB);
+    let _initializerTokenAccountA = await mintA.getAccountInfo(initializerTokenAccountA);
+    let _initializerTokenAccountB = await mintB.getAccountInfo(initializerTokenAccountB);
+
+    assert.ok(_takerTokenAccountA.amount.toNumber() == initializerAmount);
+    assert.ok(_initializerTokenAccountA.amount.toNumber() == 0);
+    assert.ok(_initializerTokenAccountB.amount.toNumber() == takerAmount);
+    assert.ok(_takerTokenAccountB.amount.toNumber() == 0);
   });
 
   it("Initialize escrow and cancel escrow", async () => {
