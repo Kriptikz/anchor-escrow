@@ -117,13 +117,28 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct Exchange<'info> {
+    #[account(signer)]
     pub taker: AccountInfo<'info>,
+    #[account(mut)]
     pub taker_deposit_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub taker_receive_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub initializer_receive_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub initializer: AccountInfo<'info>,
+    #[account(
+        mut,
+        constraint = escrow_account.taker_amount <= taker_deposit_token_account.amount,
+        constraint = escrow_account.initializer_deposit_token_account == *initializer_deposit_token_account.to_account_info().key,
+        constraint = escrow_account.initializer_receive_token_account == *initializer_receive_token_account.to_account_info().key,
+        constraint = escrow_account.initializer_key == *initializer.key,
+        close = initializer
+    )]
     pub escrow_account: Box<Account<'info, EscrowAccount>>,
+    #[account(mut)]
     pub vault_account: Account<'info, TokenAccount>,
     pub vault_authority: AccountInfo<'info>,
     pub token_program: AccountInfo<'info>,
