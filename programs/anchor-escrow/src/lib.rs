@@ -16,7 +16,27 @@ pub mod anchor_escrow {
         initializer_amount: u64,
         taker_amount: u64,
     ) -> ProgramResult {
-        // TODO
+        
+        ctx.accounts.escrow_account.initializer_key = *ctx.accounts.initializer.key;
+        ctx.accounts.escrow_account.initializer_deposit_token_account = *ctx.accounts.initializer_deposit_token_account.to_account_info().key;
+        ctx.accounts.escrow_account.initializer_receive_token_account = *ctx.accounts.initializer_receive_token_account.to_account_info().key;
+        ctx.accounts.escrow_account.initializer_amount = initializer_amount;
+        ctx.accounts.escrow_account.taker_amount = taker_amount;
+
+        let (vault_authority, _vault_authority_bump) = 
+            Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
+
+        token::set_authority(
+            ctx.accounts.into_set_authority_context(),
+            AuthorityType::AccountOwner,
+            Some(vault_authority),
+        )?;
+
+        token::transfer(
+            ctx.accounts.into_transfer_to_pda_context(),
+            ctx.accounts.escrow_account.initializer_amount,
+        )?;
+
         Ok(())
     }
 
