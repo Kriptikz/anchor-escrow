@@ -27,4 +27,18 @@ pub mod anchor_escrow {
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct Initialize<'info> {
+    // TODO
+}
+
+#[derive(Accounts)]
+pub struct Exchange<'info> {
+    // TODO
+}
+
+#[derive(Accounts)]
+pub struct Cancel<'info> {
+    // TODO
+}
+
+
