@@ -146,10 +146,19 @@ pub struct Exchange<'info> {
 
 #[derive(Accounts)]
 pub struct Cancel<'info> {
+    #[account(mut, signer)]
     pub initializer: AccountInfo<'info>,
-    pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
     pub vault_account: Account<'info, TokenAccount>,
     pub vault_authority: AccountInfo<'info>,
+    #[account(mut)]
+    pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    #[account(
+        mut,
+        constraint = escrow_account.initializer_key == *initializer.key,
+        constraint = escrow_account.initializer_deposit_token_account == *initializer_deposit_token_account.to_account_info().key,
+        close = initializer
+    )]
     pub escrow_account: Box<Account<'info, EscrowAccount>>,
     pub token_program: AccountInfo<'info>,
 }
