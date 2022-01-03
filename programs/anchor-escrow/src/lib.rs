@@ -7,6 +7,9 @@ declare_id!("CGcc7NHAsJ1zdbx47F8vcQ4qh8Z5JzXnsbNgSjcQh2kp");
 #[program]
 pub mod anchor_escrow {
     use super::*;
+
+    const ESCROW_PDA_SEED: &[u8] = b"escrow";
+
     pub fn initialize(
         ctx: Context<Initialize>,
         _vault_account_bump: u8,
