@@ -1,4 +1,6 @@
 use anchor_lang::prelude::*;
+use anchor_spl::token::{self, CloseAccount, Mint, SetAuthority, TokenAccount, Transfer};
+use spl_token::instruction::AuthorityType;
 
 declare_id!("CGcc7NHAsJ1zdbx47F8vcQ4qh8Z5JzXnsbNgSjcQh2kp");
 
@@ -28,17 +30,39 @@ pub mod anchor_escrow {
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
-    // TODO
+    pub initializer: AccountInfo<'info>,
+    pub mint: Account<'info, Mint>,
+    pub vault_account: Account<'info, TokenAccount>,
+    pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    pub initializer_receive_token_account: Account<'info, TokenAccount>,
+    pub escrow_account: Box<Account<'info, EscrowAccount>>,
+    pub system_program: AccountInfo<'info>,
+    pub rent: Sysvar<'info, Rent>,
+    pub token_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Exchange<'info> {
-    // TODO
+    pub taker: AccountInfo<'info>,
+    pub taker_deposit_token_account: Account<'info, TokenAccount>,
+    pub taker_receive_token_account: Account<'info, TokenAccount>,
+    pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    pub initializer_receive_token_account: Account<'info, TokenAccount>,
+    pub initializer: AccountInfo<'info>,
+    pub escrow_account: Box<Account<'info, EscrowAccount>>,
+    pub vault_account: Account<'info, TokenAccount>,
+    pub vault_authority: AccountInfo<'info>,
+    pub token_program: AccountInfo<'info>,
 }
 
 #[derive(Accounts)]
 pub struct Cancel<'info> {
-    // TODO
+    pub initializer: AccountInfo<'info>,
+    pub initializer_deposit_token_account: Account<'info, TokenAccount>,
+    pub vault_account: Account<'info, TokenAccount>,
+    pub vault_authority: AccountInfo<'info>,
+    pub escrow_account: Box<Account<'info, EscrowAccount>>,
+    pub token_program: AccountInfo<'info>,
 }
 
 #[account]
