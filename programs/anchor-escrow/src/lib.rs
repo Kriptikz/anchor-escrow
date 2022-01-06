@@ -42,7 +42,7 @@ pub mod anchor_escrow {
 
     pub fn cancel(ctx: Context<Cancel>) -> ProgramResult {
         
-        let (_valut_authority, vault_authority_bump) = 
+        let (_vault_authority, vault_authority_bump) = 
             Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
         
         let authority_seeds = &[&ESCROW_PDA_SEED[..], &[vault_authority_bump]];
